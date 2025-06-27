@@ -1,6 +1,8 @@
-import inspect
+import textwrap
 import os
+import inspect
 import json
+
 from pathlib import Path
 
 
@@ -80,8 +82,8 @@ def printy(msg: str, *encodings: int, end: str = '\n'):
     print(f"\033[{encodings}m{msg}\033[0m", end=end)
 
 
-def chat_log(**messages):
-    """Logs a two-person conversation
+def chat_log(log_path: str = 'chat-log.txt', **messages: dict[str, str]):
+    """Logs a two-person conversation to console and log-file
 
     Example:
         chat_log(
@@ -94,10 +96,23 @@ def chat_log(**messages):
         User: Hello!  # In first color
         ChatGPT: Hi, how are you?  # In second color
     """
-    colors = messages.pop('colors', [37, 34])
-    for i, (role, content) in enumerate(messages.items()):
-        printy(f'{role}: ', 1, colors[i])
-        printy(content, colors[i], end='\n\n')
+    colors = messages.pop('colors', [34, 37])
+    log_file = open('chat-log.txt', 'a')
+
+    for (role, content), color in zip(messages.items(), colors):
+
+        # Wrap the content for readability
+        content = textwrap.fill(content, width=80)
+        
+        # Print to console (color-coded)
+        printy(f'{role}: ', 1, color)
+        printy(content, color, end='\n\n')
+
+        # Append to log file
+        log_file.write(f'{role}:\n{content}\n\n')
+
+    log_file.close()
+
 
 
 def path_log(message: str, err: Exception = None) -> None:
