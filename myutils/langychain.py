@@ -28,6 +28,20 @@ class LangyChain:
         self.embeddings = OpenAIEmbeddings()
 
     def load_docs(self, path: str, glob: str, *, chunk_size: int = 500, chunk_overlap: int = 50):
+        """Loads vector data, performs similarity search with query, passes query and relevant docs to llm
+        
+        This method loads vectorized data from a chroma data store. Then, it vectorizes the user's query
+        and performs a similarity search between the query and the documents. The top doc_k relevant documents
+        are retrieved and passed to the LLM, along with the user query and the response is returned.
+
+        Example:
+            query: 'Who is Martin Luther King?'
+            doc_k: 5
+
+        In the above example, the top 5 documents that are most relevant to Martin Luther King are retrieved.
+        The LLM is then given these 5 documents to refer to, as well as the user's query. The LLM uses these
+        documents to construct a response to the user's query.
+        """
 
         # Initialize DirectoryLoader, specify the directory and glob
         loader = DirectoryLoader(
