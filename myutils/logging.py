@@ -14,7 +14,7 @@ def gotenv(varname: str):
     return envvar
 
 
-def gen_file_structure(output_fp: str, main_fp: str, *, ignores: set = set()) -> dict:
+def gen_file_structure(output_fp: str, main_fp: str, *, ignores: set = set(), confidential: bool = True) -> dict:
     """Creates a json file that holds the file structure of a project
 
     This function uses the pathlib python module to traverse a project's
@@ -59,7 +59,7 @@ def gen_file_structure(output_fp: str, main_fp: str, *, ignores: set = set()) ->
             elif subpath.is_file() and subpath.name not in ignores and subpath.suffix not in ignores:
                 try:
                     # Create filename-contents pair
-                    node[subpath.name] = subpath.read_text()
+                    node[subpath.name] = "" if confidential else subpath.read_text()
                 except UnicodeDecodeError:
                     node[subpath.name] = "File contents are not decodable."
                     print(f"Failed to decode: {subpath.name}")
