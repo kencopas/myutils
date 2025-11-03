@@ -2,6 +2,7 @@ import pyautogui as pag
 import webbrowser
 import os
 import time
+from pynput import mouse, keyboard
 
 
 def wait(seconds):
